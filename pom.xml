@@ -12,13 +12,13 @@
         <java.version>1.8</java.version>
     </properties>
 
-    <dependencies>
+    <!--<dependencies>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.2</version>
         </dependency>
-    </dependencies>
+    </dependencies>-->
     <!-- end::joda[] -->
 
     <build>
