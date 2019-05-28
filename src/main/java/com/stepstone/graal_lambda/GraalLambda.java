@@ -18,16 +18,16 @@ public class GraalLambda {
     private static final String EVENT_RESPONSE = "http://%s/2018-06-01/runtime/invocation/%s/response";
 
     public static void main(String[] args) {
-        final String awsLambdaRuntimeApi = System.getenv("AWS_LAMBDA_RUNTIME_API");
-        if (awsLambdaRuntimeApi == null) {
-            throw new RuntimeException("Couldn't solve host:");
-        }
-        final String nextEventEndpoint = String.format(NEXT_EVENT_ENDPOINT, awsLambdaRuntimeApi);
-        System.out.println("Listening endpoint on: " + nextEventEndpoint);
-        final HttpClient client = HttpClientBuilder.create().build();
-        final HttpGet nextEventRequest = new HttpGet(nextEventEndpoint);
-        final EchoService echoService = new EchoService();
         while (true) {
+            final String awsLambdaRuntimeApi = System.getenv("AWS_LAMBDA_RUNTIME_API");
+            if (awsLambdaRuntimeApi == null) {
+                throw new RuntimeException("Couldn't solve host:");
+            }
+            final String nextEventEndpoint = String.format(NEXT_EVENT_ENDPOINT, awsLambdaRuntimeApi);
+            System.out.println("Listening endpoint on: " + nextEventEndpoint);
+            final HttpClient client = HttpClientBuilder.create().build();
+            final HttpGet nextEventRequest = new HttpGet(nextEventEndpoint);
+            final EchoService echoService = new EchoService();
             try {
                 final HttpResponse response = client.execute(nextEventRequest);
                 System.out.println("Retrieved response: " + response.toString());
