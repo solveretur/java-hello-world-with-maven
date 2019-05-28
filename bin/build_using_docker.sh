@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#mvn clean package
+mvn clean package
 rm -rf ./build
 mkdir -p ./build
 docker build -t graal -f Dockerfile .
