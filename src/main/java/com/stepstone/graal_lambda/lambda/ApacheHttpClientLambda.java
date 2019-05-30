@@ -62,7 +62,8 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
 
     private Event getNextEvent() {
         try {
-            final HttpResponse httpResponse = sendGet(NEXT_EVENT_ENDPOINT);
+            final HttpGet httpGet = new HttpGet(this.awsLambdaRuntimeApiHost + NEXT_EVENT_ENDPOINT);
+            final HttpResponse httpResponse = client.execute(httpGet);
             final Header[] allHeaders = httpResponse.getAllHeaders();
             final String requestId = Arrays.stream(allHeaders)
                     .filter(h -> AWS_LAMBDA_RUNTIME_AWS_REQUEST_ID.equals(h.getName()))
@@ -72,6 +73,7 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
             final HttpEntity entity = httpResponse.getEntity();
             System.out.println(entity);
             final String event = EntityUtils.toString(entity, "UTF-8");
+            httpGet.releaseConnection();
             return new Event(requestId, event);
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,13 +111,6 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    private HttpResponse sendGet(final String endpoint) throws IOException {
-        final HttpGet httpGet = new HttpGet(this.awsLambdaRuntimeApiHost + endpoint);
-        final HttpResponse response = client.execute(httpGet);
-        httpGet.releaseConnection();
-        return response;
     }
 
     private HttpResponse sendPost(final String endpoint, final String json) throws IOException {
