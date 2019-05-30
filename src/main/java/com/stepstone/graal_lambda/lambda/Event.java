@@ -4,7 +4,7 @@ final class Event {
     private final String requestId;
     private final String event;
 
-    public Event(String requestId, String event) {
+    Event(String requestId, String event) {
         if (requestId == null) {
             throw new RuntimeException("RequestId must not be null");
         }
@@ -12,11 +12,11 @@ final class Event {
         this.event = event;
     }
 
-    public String getRequestId() {
+    String getRequestId() {
         return requestId;
     }
 
-    public String getEvent() {
+    String getEvent() {
         return event;
     }
 }
