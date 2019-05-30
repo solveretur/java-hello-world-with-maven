@@ -19,4 +19,12 @@ final class Event {
     String getEvent() {
         return event;
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "requestId='" + requestId + '\'' +
+                ", event='" + event + '\'' +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package com.stepstone.graal_lambda.lambda;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.stepstone.graal_lambda.Cat;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -33,9 +34,6 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
 
     public ApacheHttpClientLambda() {
         final String awsLambdaRuntimeApi = System.getenv(AWS_LAMBDA_RUNTIME_API_ENV);
-        if (awsLambdaRuntimeApi == null) {
-            throw new RuntimeException("Couldn't solve sys env $AWS_LAMBDA_RUNTIME_API");
-        }
         this.client = HttpClientBuilder.create().build();
         this.awsLambdaRuntimeApiHost = String.format(AWS_LAMBDA_RUNTIME_API_HOST, awsLambdaRuntimeApi);
     }
@@ -44,11 +42,14 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
     public O run(Function<I, O> lambdaFunction, final Class<I> clazz) {
         while (true) {
             final Event nextEvent = Optional.ofNullable(getNextEvent()).orElseThrow(() -> new RuntimeException("Next event must not be null"));
+            System.out.println(nextEvent);
             final String requestId = nextEvent.getRequestId();
             final String eventJson = nextEvent.getEvent();
             final I event = readValue(eventJson, clazz);
+            System.out.println(event.toString());
             try {
                 final O output = lambdaFunction.apply(event);
+                System.out.println(output.toString());
                 sendResponse(requestId, output);
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -67,6 +68,7 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
                     .map(Header::getValue)
                     .orElseThrow(() -> new RuntimeException("Couldn't get requestId"));
             final HttpEntity entity = httpResponse.getEntity();
+            System.out.println(entity);
             final String event = EntityUtils.toString(entity, "UTF-8");
             return new Event(requestId, event);
         } catch (Exception e) {
