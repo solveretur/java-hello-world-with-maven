@@ -1,5 +1,8 @@
 package com.stepstone.graal_lambda.lambda;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,7 +18,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
-public final class ApacheHttpClientLambda implements CustomRuntimeLambda {
+public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I, O> {
     private static final String AWS_LAMBDA_RUNTIME_API_HOST = "http://%s/2018-06-01";
     private static final String NEXT_EVENT_ENDPOINT = "/runtime/invocation/next";
     private static final String INIT_ERROR_ENDPOINT = "/runtime/init/error";
@@ -24,32 +27,28 @@ public final class ApacheHttpClientLambda implements CustomRuntimeLambda {
     private static final String AWS_LAMBDA_RUNTIME_API_ENV = "AWS_LAMBDA_RUNTIME_API";
     private static final String AWS_LAMBDA_RUNTIME_AWS_REQUEST_ID = "Lambda-Runtime-Aws-Request-Id";
 
+    private final Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.IDENTITY).serializeNulls().create();
     private final HttpClient client;
     private final String awsLambdaRuntimeApiHost;
 
-    private ApacheHttpClientLambda(HttpClient client, String awsLambdaRuntimeApiHost) {
-        this.client = client;
-        this.awsLambdaRuntimeApiHost = awsLambdaRuntimeApiHost;
-    }
-
-    public static ApacheHttpClientLambda init() {
+    public ApacheHttpClientLambda() {
         final String awsLambdaRuntimeApi = System.getenv(AWS_LAMBDA_RUNTIME_API_ENV);
         if (awsLambdaRuntimeApi == null) {
             throw new RuntimeException("Couldn't solve sys env $AWS_LAMBDA_RUNTIME_API");
         }
-        final HttpClient httpClient = HttpClientBuilder.create().build();
-        final String awsLambdaRunTimeApiHost = String.format(AWS_LAMBDA_RUNTIME_API_HOST, awsLambdaRuntimeApi);
-        return new ApacheHttpClientLambda(httpClient, awsLambdaRunTimeApiHost);
+        this.client = HttpClientBuilder.create().build();
+        this.awsLambdaRuntimeApiHost = String.format(AWS_LAMBDA_RUNTIME_API_HOST, awsLambdaRuntimeApi);
     }
 
     @Override
-    public String run(Function<String, String> lambdaFunction) {
+    public O run(Function<I, O> lambdaFunction, final Class<I> clazz) {
         while (true) {
             final Event nextEvent = Optional.ofNullable(getNextEvent()).orElseThrow(() -> new RuntimeException("Next event must not be null"));
             final String requestId = nextEvent.getRequestId();
-            final String event = nextEvent.getEvent();
+            final String eventJson = nextEvent.getEvent();
+            final I event = readValue(eventJson, clazz);
             try {
-                final String output = lambdaFunction.apply(event);
+                final O output = lambdaFunction.apply(event);
                 sendResponse(requestId, output);
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -77,10 +76,11 @@ public final class ApacheHttpClientLambda implements CustomRuntimeLambda {
         return null;
     }
 
-    private HttpResponse sendResponse(final String requestId, final String response) {
+    private HttpResponse sendResponse(final String requestId, final O response) {
+        final String message = writeValue(response);
         final String endpoint = String.format(EVENT_RESPONSE_ENDPOINT, requestId);
         try {
-            return sendPost(endpoint, response);
+            return sendPost(endpoint, message);
         } catch (IOException e) {
             e.printStackTrace();
             sendRequestErrorMessage(requestId, e.getMessage());
@@ -122,5 +122,15 @@ public final class ApacheHttpClientLambda implements CustomRuntimeLambda {
         return response;
     }
 
+    @SuppressWarnings("unchecked")
+    private I readValue(final String value, final Class<I> clazz) {
+        if (String.class.equals(clazz)) {
+            return (I) value;
+        }
+        return gson.fromJson(value, clazz);
+    }
 
+    private String writeValue(final Object o) {
+        return gson.toJson(o);
+    }
 }
