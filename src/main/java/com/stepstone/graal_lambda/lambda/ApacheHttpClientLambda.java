@@ -33,6 +33,9 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
 
     public ApacheHttpClientLambda() {
         final String awsLambdaRuntimeApi = System.getenv(AWS_LAMBDA_RUNTIME_API_ENV);
+        if (awsLambdaRuntimeApi == null) {
+            throw new RuntimeException("Couldn't solve host. Sys Env AWS_LAMBDA_RUNTIME_API is not set");
+        }
         this.client = HttpClientBuilder.create().build();
         this.awsLambdaRuntimeApiHost = String.format(AWS_LAMBDA_RUNTIME_API_HOST, awsLambdaRuntimeApi);
     }
