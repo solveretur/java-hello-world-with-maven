@@ -3,7 +3,6 @@ package com.stepstone.graal_lambda.lambda;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.stepstone.graal_lambda.Cat;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
