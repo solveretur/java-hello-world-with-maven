@@ -24,6 +24,37 @@
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
-    "allPublicMethods": true
+    "allPublicMethods": true,
+    "fields": [
+      {
+        "name": "id"
+      },
+      {
+        "name": "name"
+      },
+      {
+        "name": "isHappy"
+      }
+    ],
+    "methods": [
+      {
+        "name": "setId",
+        "parameterTypes": [
+          "java.lang.Integer"
+        ]
+      },
+      {
+        "name": "setName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setHappy",
+        "parameterTypes": [
+          "java.lang.Boolean"
+        ]
+      }
+    ]
   }
 ]
