@@ -1,12 +1,9 @@
 package com.stepstone.graal_lambda;
 
 public final class Cat {
-    private Integer id;
-    private String name;
-    private Boolean isHappy;
-
-    public Cat() {
-    }
+    private final Integer id;
+    private final String name;
+    private final Boolean isHappy;
 
     public Cat(Integer id, String name, Boolean isHappy) {
         this.id = id;
@@ -14,16 +11,16 @@ public final class Cat {
         this.isHappy = isHappy;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Integer getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name;
     }
 
-    public void setHappy(Boolean happy) {
-        isHappy = happy;
+    public Boolean getHappy() {
+        return isHappy;
     }
 
     @Override

@@ -27,33 +27,27 @@
     "allPublicMethods": true,
     "fields": [
       {
-        "name": "id"
+        "name": "id",
+        "allowWrite": true
       },
       {
-        "name": "name"
+        "name": "name",
+        "allowWrite": true
       },
       {
-        "name": "isHappy"
+        "name": "isHappy",
+        "allowWrite": true
       }
     ],
     "methods": [
       {
-        "name": "setId",
-        "parameterTypes": [
-          "java.lang.Integer"
-        ]
+        "name": "getId"
       },
       {
-        "name": "setName",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
+        "name": "getName"
       },
       {
-        "name": "setHappy",
-        "parameterTypes": [
-          "java.lang.Boolean"
-        ]
+        "name": "getHappy"
       }
     ]
   }
