@@ -1,4 +1,4 @@
-package com.stepstone.graal_lambda;
+package com.stepstone.graal_lambda.animals;
 
 public final class Cat {
     private final Integer id;

@@ -20,7 +20,7 @@
     "allPublicMethods": true
   },
   {
-    "name": "com.stepstone.graal_lambda.Cat",
+    "name": "com.stepstone.graal_lambda.animals.Cat",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
