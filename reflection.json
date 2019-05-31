@@ -50,5 +50,24 @@
         "name": "getHappy"
       }
     ]
+  },
+  {
+    "name": "com.stepstone.graal_lambda.animals.Dog",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true,
+    "fields": [
+      {
+        "name": "voice",
+        "allowWrite": true
+      },
+      {
+        "name": "catName",
+        "allowWrite": true
+      },
+      {
+        "name": "isAngry",
+        "allowWrite": true
+      }
+    ]
   }
 ]
