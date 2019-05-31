@@ -41,13 +41,13 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
     }
 
     @Override
-    public O run(Function<I, O> lambdaFunction, final Class<I> clazz) {
+    public O run(final Function<I, O> lambdaFunction, final Class<I> iClass) {
         while (true) {
             final Event nextEvent = Optional.ofNullable(getNextEvent()).orElseThrow(() -> new RuntimeException("Next event must not be null"));
             System.out.println(nextEvent);
             final String requestId = nextEvent.getRequestId();
             final String eventJson = nextEvent.getEvent();
-            final I event = readValue(eventJson, clazz);
+            final I event = readValue(eventJson, iClass);
             System.out.println(event.toString());
             try {
                 final O output = lambdaFunction.apply(event);
