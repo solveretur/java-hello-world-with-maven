@@ -41,7 +41,7 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
     }
 
     @Override
-    public O run(final Function<I, O> lambdaFunction, final Class<I> iClass) {
+    public void run(final Function<I, O> lambdaFunction, final Class<I> iClass) {
         while (true) {
             final Event nextEvent = Optional.ofNullable(getNextEvent()).orElseThrow(() -> new RuntimeException("Next event must not be null"));
             System.out.println(nextEvent);

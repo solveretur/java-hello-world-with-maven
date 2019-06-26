@@ -1,16 +1,17 @@
 package com.stepstone.graal_lambda;
 
-import com.stepstone.graal_lambda.animals.AnimalService;
-import com.stepstone.graal_lambda.animals.Cat;
-import com.stepstone.graal_lambda.animals.Dog;
 import com.stepstone.graal_lambda.lambda.ApacheHttpClientLambda;
 import com.stepstone.graal_lambda.lambda.CustomRuntimeLambda;
+import com.stepstone.graal_lambda.service.APIGatewayProxyRequestEvent;
+import com.stepstone.graal_lambda.service.GCDServiceMath;
+import com.stepstone.graal_lambda.service.MathApiGatewayProxyService;
+import com.stepstone.graal_lambda.service.ServiceResponse;
 
 public class GraalLambda {
 
     public static void main(String[] args) {
-        final AnimalService as = new AnimalService();
-        final CustomRuntimeLambda<Cat, Dog> lambda = new ApacheHttpClientLambda<>();
-        lambda.run(as::meetCat, Cat.class);
+        final MathApiGatewayProxyService mathService = new GCDServiceMath();
+        final CustomRuntimeLambda<APIGatewayProxyRequestEvent, ServiceResponse> lambda = new ApacheHttpClientLambda<>();
+        lambda.run(mathService::compute, APIGatewayProxyRequestEvent.class);
     }
 }

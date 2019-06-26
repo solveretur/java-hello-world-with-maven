@@ -20,54 +20,67 @@
     "allPublicMethods": true
   },
   {
-    "name": "com.stepstone.graal_lambda.animals.Cat",
+    "name": "com.stepstone.graal_lambda.service.Data",
     "allDeclaredConstructors": true,
     "allPublicConstructors": true,
     "allDeclaredMethods": true,
     "allPublicMethods": true,
     "fields": [
       {
-        "name": "id",
+        "name": "i1",
         "allowWrite": true
       },
       {
-        "name": "name",
-        "allowWrite": true
-      },
-      {
-        "name": "isHappy",
+        "name": "i2",
         "allowWrite": true
       }
     ],
     "methods": [
       {
-        "name": "getId"
+        "name": "getI1"
       },
       {
-        "name": "getName"
-      },
-      {
-        "name": "getHappy"
+        "name": "getI2"
       }
     ]
   },
   {
-    "name": "com.stepstone.graal_lambda.animals.Dog",
+    "name": "com.stepstone.graal_lambda.service.ServiceResponse",
     "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
     "allDeclaredMethods": true,
+    "allPublicMethods": true,
     "fields": [
       {
-        "name": "voice",
+        "name": "i1",
         "allowWrite": true
       },
       {
-        "name": "catName",
+        "name": "i2",
         "allowWrite": true
       },
       {
-        "name": "isAngry",
+        "name": "gcd",
         "allowWrite": true
       }
+    ],
+    "methods": [
+      {
+        "name": "getI1"
+      },
+      {
+        "name": "getI2"
+      },
+      {
+        "name": "getGcd"
+      }
     ]
+  },
+  {
+    "name": "com.stepstone.graal_lambda.service.APIGatewayProxyRequestEvent",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true,
+    "allPublicClasses": true
   }
 ]
