@@ -7,7 +7,7 @@ RUN yum -y install dos2unix
 RUN mkdir -p /root/project
 RUN mkdir -p /root/project/build
 
-COPY target/jb-hello-world-maven-0.1.0-jar-with-dependencies.jar /root/project/target/jb-hello-world-maven-0.1.0-jar-with-dependencies.jar
+COPY target/jb-hello-world-maven-0.1.0.jar /root/project/target/jb-hello-world-maven-0.1.0.jar
 COPY reflection.json /root/project/reflection.json
 COPY resources.json /root/project/resources.json
 COPY runtime/bootstrap /root/project/runtime/bootstrap
