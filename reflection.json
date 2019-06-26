@@ -80,7 +80,12 @@
     "name": "com.stepstone.graal_lambda.service.APIGatewayProxyRequestEvent",
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true,
-    "allDeclaredFields": true,
-    "allPublicClasses": true
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.stepstone.graal_lambda.service.APIGatewayProxyRequestEvent$ProxyRequestContext",
+    "allDeclaredConstructors": true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
   }
 ]
