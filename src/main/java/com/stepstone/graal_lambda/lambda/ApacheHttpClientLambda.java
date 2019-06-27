@@ -13,7 +13,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
@@ -23,7 +22,7 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
     private static final String NEXT_EVENT_ENDPOINT = "/runtime/invocation/next";
     private static final String INIT_ERROR_ENDPOINT = "/runtime/init/error";
     private static final String EVENT_RESPONSE_ENDPOINT = "/runtime/invocation/%s/response";
-    private static final String EVENT_ERROR_ENDPOINT = "/runtime/invocation/%s/response";
+    private static final String EVENT_ERROR_ENDPOINT = "/runtime/invocation/%s/error";
     private static final String AWS_LAMBDA_RUNTIME_API_ENV = "AWS_LAMBDA_RUNTIME_API";
     private static final String AWS_LAMBDA_RUNTIME_AWS_REQUEST_ID = "Lambda-Runtime-Aws-Request-Id";
 
@@ -61,8 +60,8 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
     }
 
     private Event getNextEvent() {
+        final HttpGet httpGet = new HttpGet(this.awsLambdaRuntimeApiHost + NEXT_EVENT_ENDPOINT);
         try {
-            final HttpGet httpGet = new HttpGet(this.awsLambdaRuntimeApiHost + NEXT_EVENT_ENDPOINT);
             final HttpResponse httpResponse = client.execute(httpGet);
             final Header[] allHeaders = httpResponse.getAllHeaders();
             final String requestId = Arrays.stream(allHeaders)
@@ -73,11 +72,12 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
             final HttpEntity entity = httpResponse.getEntity();
             System.out.println(entity);
             final String event = EntityUtils.toString(entity, "UTF-8");
-            httpGet.releaseConnection();
             return new Event(requestId, event);
         } catch (Exception e) {
             e.printStackTrace();
             sendInitErrorMessage(e.getMessage());
+        } finally {
+            httpGet.releaseConnection();
         }
         return null;
     }
@@ -87,7 +87,7 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
         final String endpoint = String.format(EVENT_RESPONSE_ENDPOINT, requestId);
         try {
             return sendPost(endpoint, message);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             sendRequestErrorMessage(requestId, e.getMessage());
         }
@@ -98,7 +98,7 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
         final String endpoint = String.format(EVENT_ERROR_ENDPOINT, requestId);
         try {
             sendPost(endpoint, message);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -107,18 +107,24 @@ public final class ApacheHttpClientLambda<I, O> implements CustomRuntimeLambda<I
     private void sendInitErrorMessage(final String message) {
         try {
             sendPost(INIT_ERROR_ENDPOINT, message);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    private HttpResponse sendPost(final String endpoint, final String json) throws IOException {
+    private HttpResponse sendPost(final String endpoint, final String json) {
         final HttpPost httpPost = new HttpPost(this.awsLambdaRuntimeApiHost + endpoint);
-        httpPost.setEntity(new StringEntity(json));
-        final HttpResponse response = client.execute(httpPost);
-        httpPost.releaseConnection();
-        return response;
+        try {
+            httpPost.setEntity(new StringEntity(json));
+            final HttpResponse response = client.execute(httpPost);
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            httpPost.releaseConnection();
+        }
     }
 
     @SuppressWarnings("unchecked")

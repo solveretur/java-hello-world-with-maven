@@ -11,7 +11,7 @@ public final class GCDServiceMath implements MathApiGatewayProxyService {
 
 
     @Override
-    public ServiceResponse compute(final APIGatewayProxyRequestEvent event) {
+    public RequestResponse compute(final APIGatewayProxyRequestEvent event) {
         final String body = event.getBody();
         final Data data = this.gson.fromJson(body, Data.class);
         final int i1 = Optional.ofNullable(data).map(Data::getI1).orElse(0);
@@ -26,6 +26,8 @@ public final class GCDServiceMath implements MathApiGatewayProxyService {
             }
         }
         final Integer result = i1_val;
-        return new ServiceResponse(i1, i2, result);
+        final ServiceResponse serviceResponse = new ServiceResponse(i1, i2, result);
+        final String json = gson.toJson(serviceResponse);
+        return new RequestResponse(200, json, false);
     }
 }

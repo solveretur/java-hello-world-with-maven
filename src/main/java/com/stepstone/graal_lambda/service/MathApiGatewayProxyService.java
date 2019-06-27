@@ -1,5 +1,5 @@
 package com.stepstone.graal_lambda.service;
 
 public interface MathApiGatewayProxyService {
-    ServiceResponse compute(final APIGatewayProxyRequestEvent event);
+    RequestResponse compute(final APIGatewayProxyRequestEvent event);
 }
